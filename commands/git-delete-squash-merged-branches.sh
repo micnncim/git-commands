@@ -29,9 +29,9 @@ git-delete-squash-merged-branches() {
     for branch in $branches; do
         mergeBase=$(git merge-base master "$branch")
         if [[ $(git cherry master "$(git commit-tree "$(git rev-parse "$branch"^'{tree}')" -p "$mergeBase" -m _)") == "-"* ]]; then
-            ask "$(green '>>>') Are you sure to delete branch $(cyan \'"${branch}"\')?" || continue
+            ask "$(blue '>>>') Are you sure to delete branch $(cyan \'"${branch}"\')?" || continue
             git branch -q -D "$branch"
-            echo "$(green '==>') Deleted branch $(cyan \'"${branch}"\')"
+            echo "$(blue '==>') Deleted branch $(cyan \'"${branch}"\')"
         fi
     done
 }
@@ -57,9 +57,9 @@ ask() {
     done
 }
 
-green() {
+blue() {
     message=$1
-    echo -n "${ESC}[32m${message}${ESC}[m"
+    echo -n "${ESC}[34m${message}${ESC}[m"
 }
 
 cyan() {
