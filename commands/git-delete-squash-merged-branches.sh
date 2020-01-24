@@ -23,7 +23,7 @@ set -e
 ESC=$(printf '\033')
 
 git-delete-squash-merged-branches() {
-    git checkout -q master
+    git switch -q master
     branches=$(git for-each-ref refs/heads/ "--format=%(refname:short)" | tr '\n' ' ')
 
     for branch in $branches; do
