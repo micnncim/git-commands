@@ -14,5 +14,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-find "${PWD}/commands" -type f -name "*.sh" \
-    -exec ln -s "${PWD}/commands/{}" /usr/local/bin/"$(basename {} '.sh')" \;
+set -e
+
+for f in $(find "${PWD}/commands" -type f -name "*.sh"); do
+    bin=$(basename "${f}" '.sh')
+    ln -s "${f}" /usr/local/bin/"${bin}"
+done
