@@ -21,50 +21,43 @@
 set -e
 
 ESC=$(printf '\033')
+BLUE="${ESC}[34m"
+CYAN="${ESC}[36m"
+NO_COLOR="${ESC}[m"
 
 git-delete-squash-merged-branches() {
-    git switch -q master
-    branches=$(git for-each-ref refs/heads/ "--format=%(refname:short)" | tr '\n' ' ')
+  git switch -q master
+  branches=$(git for-each-ref refs/heads/ "--format=%(refname:short)" | tr '\n' ' ')
 
-    for branch in $branches; do
-        mergeBase=$(git merge-base master "$branch")
-        if [[ $(git cherry master "$(git commit-tree "$(git rev-parse "$branch"^'{tree}')" -p "$mergeBase" -m _)") == "-"* ]]; then
-            ask "$(blue '>>>') Are you sure to delete branch $(cyan \'"${branch}"\')?" || continue
-            git branch -q -D "$branch"
-            echo "$(blue '==>') Deleted branch $(cyan \'"${branch}"\')"
-        fi
-    done
+  for branch in $branches; do
+    mergeBase=$(git merge-base master "$branch")
+    if [[ $(git cherry master "$(git commit-tree "$(git rev-parse "$branch"^'{tree}')" -p "$mergeBase" -m _)") == "-"* ]]; then
+      ask "${BLUE}>>> Are you sure to delete branch${NO_COLOR} ${CYAN}'${branch}'${NO_COLOR}${BLUE}?${NO_COLOR}" || continue
+      # git branch -q -D "$branch"
+      echo "${BLUE}==> Deleted branch${NO_COLOR} ${CYAN}'${branch}'${NO_COLOR}"
+    fi
+  done
 }
 
 ask() {
-    local message input
-    message="${1:-Are you sure?}"
+  local message input
+  message="${1:-Are you sure?}"
 
-    while true
-    do
-        read -r -p "${message} [Y/n] " input
-        case "${input}" in
-            Y)
-                return 0
-                ;;
-            n)
-                return 1
-                ;;
-            *)
-                echo "Invalid input... again" >&2
-                ;;
-        esac
-    done
-}
-
-blue() {
-    message=$1
-    echo -n "${ESC}[34m${message}${ESC}[m"
-}
-
-cyan() {
-    message=$1
-    echo -n "${ESC}[36m${message}${ESC}[m"
+  while true
+  do
+    read -r -p "${message} [Y/n] " input
+    case "${input}" in
+      Y)
+        return 0
+        ;;
+      n)
+        return 1
+        ;;
+      *)
+        echo "Invalid input... again" >&2
+        ;;
+    esac
+  done
 }
 
 git-delete-squash-merged-branches
