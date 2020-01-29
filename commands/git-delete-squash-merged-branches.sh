@@ -33,7 +33,7 @@ git-delete-squash-merged-branches() {
     mergeBase=$(git merge-base master "$branch")
     if [[ $(git cherry master "$(git commit-tree "$(git rev-parse "$branch"^'{tree}')" -p "$mergeBase" -m _)") == "-"* ]]; then
       ask "${BLUE}>>> Are you sure to delete branch${NO_COLOR} ${CYAN}'${branch}'${NO_COLOR}${BLUE}?${NO_COLOR}" || continue
-      # git branch -q -D "$branch"
+      git branch -q -D "$branch"
       echo "${BLUE}==> Deleted branch${NO_COLOR} ${CYAN}'${branch}'${NO_COLOR}"
     fi
   done
