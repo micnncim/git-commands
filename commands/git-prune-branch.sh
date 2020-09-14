@@ -13,7 +13,7 @@ readonly NO_COLOR="${ESC}[m"
 git_delete_merged_branches() {
   git switch -q master
 
-  local -r branches=$(git branches --merge | grep -v 'master')
+  local -r branches=$(git branch --merge | grep -v 'master')
 
   for branch in $branches; do
     git branch -q -d "$branch"
