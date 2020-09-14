@@ -1,18 +1,19 @@
 #!/bin/bash
 
-# Deletes all the merged git branches.
+# Deletes all the merged Git branches.
 
-set -e
+set -eu
+set -o pipefail
 
-ESC=$(printf '\033')
-BLUE="${ESC}[34m"
-CYAN="${ESC}[36m"
-NO_COLOR="${ESC}[m"
+readonly ESC=$(printf '\033')
+readonly BLUE="${ESC}[34m"
+readonly CYAN="${ESC}[36m"
+readonly NO_COLOR="${ESC}[m"
 
-git-delete-merged-branch() {
+git_delete_merged_branches() {
   git switch -q master
 
-  branches=$(git branch --merge | grep -v 'master')
+  local -r branches=$(git branches --merge | grep -v 'master')
 
   for branch in $branches; do
     git branch -q -d "$branch"
@@ -20,23 +21,25 @@ git-delete-merged-branch() {
   done
 }
 
-git-delete-squashed-branch() {
+git_delete_squashed_branches() {
   git switch -q master
 
-  branches=$(git for-each-ref refs/heads/ "--format=%(refname:short)" | tr '\n' ' ')
+  local -r branches=$(git for-each-ref refs/heads/ "--format=%(refname:short)" | tr '\n' ' ')
 
+  local merge_base
   for branch in $branches; do
-    mergeBase=$(git merge-base master "$branch")
-    if [[ $(git cherry master "$(git commit-tree "$(git rev-parse "$branch"^'{tree}')" -p "$mergeBase" -m _)") == "-"* ]]; then
+    merge_base=$(git merge-base master "$branch")
+
+    if [[ $(git cherry master "$(git commit-tree "$(git rev-parse "$branch"^'{tree}')" -p "$merge_base" -m _)") == "-"* ]]; then
       git branch -q -D "$branch"
       echo "${BLUE}==> Deleted branch${NO_COLOR} ${CYAN}'${branch}'${NO_COLOR}"
     fi
   done
 }
 
-git-prune-branch() {
-  git-delete-merged-branch
-  git-delete-squashed-branch
+git_prune_branches() {
+  git_delete_merged_branches
+  git_delete_squashed_branches
 }
 
-git-prune-branch
+git_prune_branches "$@"

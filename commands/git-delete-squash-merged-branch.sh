@@ -32,15 +32,15 @@ ask() {
   while true; do
     read -r -p "${message} [Y/n] " input
     case "${input}" in
-    Y)
-      return 0
-      ;;
-    n)
-      return 1
-      ;;
-    *)
-      echo "Invalid input... again" >&2
-      ;;
+      Y)
+        return 0
+        ;;
+      n)
+        return 1
+        ;;
+      *)
+        echo "Invalid input... again" >&2
+        ;;
     esac
   done
 }
