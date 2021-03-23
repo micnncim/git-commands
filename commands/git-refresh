@@ -47,6 +47,8 @@ git_refresh() {
 
   git_delete_merged_branches
   git_delete_squashed_branches
+
+  echo
 }
 
 git_refresh "$@"
