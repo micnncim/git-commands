@@ -45,6 +45,8 @@ git_refresh() {
   remote=$(git remote | fzf | head -n 1)
   git pull "${remote}" "${DEFAULT_BRANCH}"
 
+  echo
+
   git_delete_merged_branches
   git_delete_squashed_branches
 
